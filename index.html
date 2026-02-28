@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Journal Template - Track and Improve Your Decision Making</title>
+    <meta name="description" content="Interactive decision journal template to document context, options, criteria, and outcome predictions. Improve your decision quality over time.">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --bg: #f0fdf4;
+            --card-bg: #ffffff;
+            --text: #14532d;
+            --text-light: #4b6a5d;
+            --border: #d1e7dd;
+            --success: #10b981;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        .hero {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #34d399 100%);
+            color: white; padding: 80px 20px; text-align: center;
+        }
+        .hero h1 { font-size: 3em; margin-bottom: 16px; font-weight: 800; }
+        .hero p { font-size: 1.2em; opacity: 0.9; max-width: 700px; margin: 0 auto 30px; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 18px; border-radius: 50px; font-size: 0.85em; margin-bottom: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        nav { background: white; padding: 14px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .nav-brand { font-weight: 700; font-size: 1.2em; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-light); text-decoration: none; font-size: 0.95em; }
+        .nav-links a:hover { color: var(--primary); }
+        .section { padding: 60px 0; }
+        .section-title { font-size: 2em; text-align: center; margin-bottom: 12px; }
+        .section-sub { text-align: center; color: var(--text-light); max-width: 650px; margin: 0 auto 40px; font-size: 1.1em; }
+        .divider { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin: 0 auto 30px; }
+        .journal-section {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .journal-section::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -16px;
+            left: 32px;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+        .journal-section h3 { font-size: 1.4em; margin-bottom: 8px; color: var(--primary-dark); }
+        .journal-section .desc { color: var(--text-light); margin-bottom: 20px; }
+        .field-group { margin: 16px 0; }
+        .field-label {
+            font-weight: 600; font-size: 0.95em; margin-bottom: 6px; display: block; color: var(--text);
+        }
+        .field-hint { font-size: 0.85em; color: var(--text-light); margin-bottom: 8px; font-style: italic; }
+        .field-input {
+            width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
+            font-family: inherit; font-size: 1em; resize: vertical; background: #f8fdf9;
+            transition: border-color 0.2s;
+        }
+        .field-input:focus { border-color: var(--primary); outline: none; background: white; }
+        textarea.field-input { min-height: 100px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2em; }
+            .journal-section { padding: 28px; }
+        }
+        .option-card {
+            background: #f0fdf4; border: 2px solid var(--border); border-radius: 12px; padding: 20px;
+        }
+        .option-card h4 { color: var(--primary); font-size: 1em; margin-bottom: 8px; }
+        .criteria-table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            border-radius: 10px; overflow: hidden; margin-top: 12px;
+        }
+        .criteria-table th { background: var(--primary); color: white; padding: 12px; text-align: left; font-weight: 600; font-size: 0.9em; }
+        .criteria-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); background: white; font-size: 0.95em; }
+        .criteria-table tr:last-child td { border-bottom: none; }
+        .criteria-table input[type="text"], .criteria-table select {
+            width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px;
+            font-family: inherit; font-size: 0.9em; background: #f8fdf9;
+        }
+        .scale-bar {
+            display: flex; gap: 4px; margin: 8px 0;
+        }
+        .scale-item {
+            flex: 1; height: 36px; border-radius: 6px; display: flex; align-items: center;
+            justify-content: center; font-size: 0.8em; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; border: 2px solid transparent;
+        }
+        .scale-1 { background: #fee2e2; color: #dc2626; }
+        .scale-2 { background: #fef3c7; color: #d97706; }
+        .scale-3 { background: #fef9c3; color: #ca8a04; }
+        .scale-4 { background: #d1fae5; color: #059669; }
+        .scale-5 { background: #a7f3d0; color: #047857; }
+        .scale-item:hover { transform: scale(1.1); border-color: var(--primary); }
+        .tip-box {
+            background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px;
+            padding: 16px; margin: 16px 0;
+        }
+        .tip-box strong { color: #d97706; }
+        .highlight-box {
+            background: linear-gradient(135deg, #f0fdf4, #d1fae5);
+            border: 1px solid #6ee7b7;
+            border-radius: 12px; padding: 24px; margin: 20px 0;
+        }
+        .btn { display: inline-block; padding: 14px 30px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1em; transition: all 0.2s; cursor: pointer; border: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-white { background: white; color: var(--primary); }
+        .btn-white:hover { background: #f0fdf4; }
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+        .print-btn { background: var(--secondary); color: white; margin-left: 12px; }
+        .cta-section {
+            background: linear-gradient(135deg, #064e3b, #059669);
+            color: white; padding: 80px 20px; text-align: center;
+            border-radius: 24px; margin: 40px auto; max-width: 1100px;
+        }
+        .cta-section h2 { font-size: 2.2em; margin-bottom: 14px; }
+        .cta-section p { font-size: 1.1em; opacity: 0.9; max-width: 600px; margin: 0 auto 28px; }
+        .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 30px; }
+        .resource-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: all 0.2s; }
+        .resource-card:hover { border-color: var(--primary); }
+        .resource-card a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .resource-card p { color: var(--text-light); font-size: 0.85em; margin-top: 6px; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+        footer { background: #064e3b; color: #6ee7b7; padding: 60px 20px 30px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1100px; margin: 0 auto 40px; }
+        .footer-col h4 { color: white; margin-bottom: 14px; }
+        .footer-col a { display: block; color: #6ee7b7; text-decoration: none; padding: 4px 0; }
+        .footer-col a:hover { color: white; }
+        .footer-bottom { max-width: 1100px; margin: 0 auto; padding-top: 20px; border-top: 1px solid #047857; text-align: center; font-size: 0.9em; }
+        @media print {
+            nav, .hero .btn, .print-btn, .cta-section, footer { display: none; }
+            .hero { padding: 30px; }
+            .journal-section { break-inside: avoid; box-shadow: none; border: 2px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a href="https://keeprule.com" class="nav-brand">KeepRule</a>
+            <div class="nav-links">
+                <a href="https://keeprule.com/en/scenarios">Scenarios</a>
+                <a href="https://keeprule.com/en/principles">Principles</a>
+                <a href="https://keeprule.com/en/masters">Masters</a>
+                <a href="https://keeprule.com/en/blog">Blog</a>
+                <a href="https://keeprule.com/en/faq">FAQ</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="badge">Free Decision-Making Tool</div>
+        <h1>Decision Journal Template</h1>
+        <p>Document your decisions systematically, predict outcomes, and learn from results. The most powerful tool for improving decision quality over time.</p>
+        <a href="https://keeprule.com/en/scenarios" class="btn btn-white">Explore Decision Scenarios</a>
+    </section>
+
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">Why Keep a Decision Journal?</h2>
+            <div class="divider"></div>
+            <div class="two-col">
+                <div class="highlight-box">
+                    <h3 style="margin-bottom:12px">The Problem</h3>
+                    <p style="color:var(--text-light)">Most people evaluate decisions by their outcomes. But outcomes are influenced by luck. A good decision can have a bad outcome, and a bad decision can have a good outcome. Without a journal, you can't tell the difference.</p>
+                    <p style="margin-top:12px;color:var(--text-light)">Hindsight bias rewrites our memories. After we know the outcome, we "remember" being more or less confident than we actually were. A decision journal captures your actual state of mind at the time of the decision.</p>
+                </div>
+                <div class="highlight-box">
+                    <h3 style="margin-bottom:12px">The Solution</h3>
+                    <p style="color:var(--text-light)">By recording your reasoning BEFORE you know the outcome, you create an honest record that you can review later. Over time, you'll discover patterns in your thinking, identify systematic errors, and calibrate your confidence.</p>
+                    <p style="margin-top:12px"><strong>Research shows</strong> that people who keep decision journals improve their prediction accuracy by 20-30% within 6 months. Start with <a href="https://keeprule.com/en/principles" style="color:var(--primary)">KeepRule's decision principles</a> as your foundation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="template">
+            <h2 class="section-title">The Decision Journal Template</h2>
+            <div class="divider"></div>
+            <p class="section-sub">Fill out each section for every significant decision. Print this page or copy the structure into your preferred note-taking tool.</p>
+
+            <div style="text-align:center;margin-bottom:30px">
+                <button class="btn btn-primary" onclick="window.print()">Print This Template</button>
+                <a href="https://keeprule.com" class="btn print-btn">Get Digital Tools at KeepRule</a>
+            </div>
+
+            <!-- Section 1: Context -->
+            <div class="journal-section" data-step="1">
+                <h3>Decision Context</h3>
+                <p class="desc">Capture the situation, constraints, and your mental/emotional state at the time of the decision.</p>
+
+                <div class="field-group">
+                    <label class="field-label">Decision Date</label>
+                    <input type="date" class="field-input" style="max-width:300px">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Decision Title</label>
+                    <div class="field-hint">Give this decision a clear, specific name</div>
+                    <input type="text" class="field-input" placeholder="e.g., Whether to accept the Senior PM role at Company X">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Situation Summary</label>
+                    <div class="field-hint">What is happening? Why does this decision need to be made now?</div>
+                    <textarea class="field-input" placeholder="Describe the current situation and the trigger for this decision..."></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Key Constraints</label>
+                    <div class="field-hint">Time pressure, budget limits, information gaps, stakeholder expectations</div>
+                    <textarea class="field-input" placeholder="List the main constraints affecting this decision..." style="min-height:80px"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Current Mental/Emotional State</label>
+                    <div class="field-hint">Are you stressed, excited, fearful, calm? This affects decision quality.</div>
+                    <div class="scale-bar">
+                        <div class="scale-item scale-1">Very Stressed</div>
+                        <div class="scale-item scale-2">Stressed</div>
+                        <div class="scale-item scale-3">Neutral</div>
+                        <div class="scale-item scale-4">Calm</div>
+                        <div class="scale-item scale-5">Very Calm</div>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <strong>Tip from KeepRule:</strong> Decisions made under strong emotional states tend to be lower quality. If you're very stressed or very excited, consider delaying the decision if possible. Explore <a href="https://keeprule.com/en/blog" style="color:#d97706">emotional decision-making insights</a>.
+                </div>
+            </div>
+
+            <!-- Section 2: Options -->
+            <div class="journal-section" data-step="2">
+                <h3>Options Considered</h3>
+                <p class="desc">List all viable options. Forcing yourself to generate at least 3 options reduces binary thinking.</p>
+
+                <div class="options-grid">
+                    <div class="option-card">
+                        <h4>Option A (Status Quo)</h4>
+                        <div class="field-group">
+                            <textarea class="field-input" placeholder="Describe Option A - what happens if you do nothing or maintain current course?" style="min-height:80px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Pros</label>
+                            <textarea class="field-input" placeholder="List advantages..." style="min-height:60px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Cons</label>
+                            <textarea class="field-input" placeholder="List disadvantages..." style="min-height:60px"></textarea>
+                        </div>
+                    </div>
+                    <div class="option-card">
+                        <h4>Option B</h4>
+                        <div class="field-group">
+                            <textarea class="field-input" placeholder="Describe Option B..." style="min-height:80px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Pros</label>
+                            <textarea class="field-input" placeholder="List advantages..." style="min-height:60px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Cons</label>
+                            <textarea class="field-input" placeholder="List disadvantages..." style="min-height:60px"></textarea>
+                        </div>
+                    </div>
+                    <div class="option-card">
+                        <h4>Option C</h4>
+                        <div class="field-group">
+                            <textarea class="field-input" placeholder="Describe Option C (creative alternative)..." style="min-height:80px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Pros</label>
+                            <textarea class="field-input" placeholder="List advantages..." style="min-height:60px"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" style="font-size:0.85em">Cons</label>
+                            <textarea class="field-input" placeholder="List disadvantages..." style="min-height:60px"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tip-box" style="margin-top:20px">
+                    <strong>Pro Tip:</strong> Can't think of a third option? Try "vanishing options" - imagine Options A and B are impossible. What would you do? This often reveals creative alternatives. Learn more at <a href="https://keeprule.com/en/scenarios" style="color:#d97706">KeepRule Scenarios</a>.
+                </div>
+            </div>
+
+            <!-- Section 3: Criteria -->
+            <div class="journal-section" data-step="3">
+                <h3>Decision Criteria</h3>
+                <p class="desc">Define what matters most. Weight each criterion by importance (1-5) and rate each option against it.</p>
+
+                <table class="criteria-table">
+                    <tr>
+                        <th>Criterion</th>
+                        <th>Weight (1-5)</th>
+                        <th>Option A</th>
+                        <th>Option B</th>
+                        <th>Option C</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Financial impact"></td>
+                        <td><input type="text" placeholder="5"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Risk level"></td>
+                        <td><input type="text" placeholder="4"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Alignment with values"></td>
+                        <td><input type="text" placeholder="3"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Reversibility"></td>
+                        <td><input type="text" placeholder="3"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="e.g., Long-term growth"></td>
+                        <td><input type="text" placeholder="4"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                        <td><input type="text" placeholder="Score 1-10"></td>
+                    </tr>
+                </table>
+                <p style="margin-top:12px;color:var(--text-light);font-size:0.9em">Weighted Score = Sum of (Weight x Score) for each option. The highest score doesn't always win - use it as input, not the final answer. See <a href="https://keeprule.com/en/principles" style="color:var(--primary)">KeepRule Principles</a> for balanced decision frameworks.</p>
+            </div>
+
+            <!-- Section 4: Prediction -->
+            <div class="journal-section" data-step="4">
+                <h3>Outcome Prediction</h3>
+                <p class="desc">Before deciding, predict what will happen. This is the most important part - it calibrates your judgment over time.</p>
+
+                <div class="field-group">
+                    <label class="field-label">My Decision</label>
+                    <input type="text" class="field-input" placeholder="Which option are you choosing and why?">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Expected Outcome (Best Case)</label>
+                    <textarea class="field-input" placeholder="If everything goes well, what happens?" style="min-height:70px"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Expected Outcome (Most Likely)</label>
+                    <textarea class="field-input" placeholder="What is the most realistic outcome?" style="min-height:70px"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Expected Outcome (Worst Case)</label>
+                    <textarea class="field-input" placeholder="If everything goes wrong, what happens? Can you survive it?" style="min-height:70px"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Confidence Level</label>
+                    <div class="field-hint">How confident are you that this is the right decision?</div>
+                    <div class="scale-bar">
+                        <div class="scale-item scale-1">20%</div>
+                        <div class="scale-item scale-2">40%</div>
+                        <div class="scale-item scale-3">60%</div>
+                        <div class="scale-item scale-4">80%</div>
+                        <div class="scale-item scale-5">95%+</div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">What Would Change My Mind?</label>
+                    <div class="field-hint">Define specific evidence that would make you reconsider. This prevents confirmation bias.</div>
+                    <textarea class="field-input" placeholder="List 2-3 specific things that, if true, would make you choose differently..." style="min-height:80px"></textarea>
+                </div>
+            </div>
+
+            <!-- Section 5: Review -->
+            <div class="journal-section" data-step="5">
+                <h3>Post-Decision Review</h3>
+                <p class="desc">Complete this section 30-90 days after the decision. This is where the real learning happens.</p>
+
+                <div class="field-group">
+                    <label class="field-label">Review Date</label>
+                    <input type="date" class="field-input" style="max-width:300px">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Actual Outcome</label>
+                    <textarea class="field-input" placeholder="What actually happened? Be specific and honest."></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Was the outcome due to good process or good luck?</label>
+                    <div class="scale-bar">
+                        <div class="scale-item scale-1">Pure Luck</div>
+                        <div class="scale-item scale-2">Mostly Luck</div>
+                        <div class="scale-item scale-3">Mixed</div>
+                        <div class="scale-item scale-4">Mostly Skill</div>
+                        <div class="scale-item scale-5">Pure Skill</div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Key Lessons Learned</label>
+                    <textarea class="field-input" placeholder="What would you do differently? What did you learn about your decision process?"></textarea>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Accuracy of Predictions</label>
+                    <div class="field-hint">Compare your predictions to actual outcomes. Track this over time to calibrate.</div>
+                    <textarea class="field-input" placeholder="How accurate were your best/likely/worst case predictions?" style="min-height:80px"></textarea>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Long-Term Tracking:</strong> After 20+ journal entries, review your confidence calibration. Are your 80% predictions right 80% of the time? Most people are overconfident. Use <a href="https://keeprule.com" style="color:var(--primary)">KeepRule's digital tools</a> to track your decision patterns.
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Decision-Making Resources</h2>
+            <div class="divider"></div>
+            <div class="resource-grid">
+                <div class="resource-card"><a href="https://keeprule.com/en/scenarios">Decision Scenarios</a><p>Practice decisions with real-world case studies</p></div>
+                <div class="resource-card"><a href="https://keeprule.com/en/principles">Decision Principles</a><p>Evidence-based frameworks for every decision type</p></div>
+                <div class="resource-card"><a href="https://keeprule.com/en/masters">Expert Masters</a><p>Wisdom from the world's best decision-makers</p></div>
+                <div class="resource-card"><a href="https://keeprule.com/en/blog">Blog & Insights</a><p>Deep dives into decision science and psychology</p></div>
+                <div class="resource-card"><a href="https://keeprule.com/en/faq">FAQ</a><p>Common questions about structured decision-making</p></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="cta-section">
+        <h2>Level Up Your Decision Making</h2>
+        <p>This journal is just the beginning. KeepRule offers comprehensive decision frameworks, real-world scenarios, and expert insights to transform how you make choices.</p>
+        <a href="https://keeprule.com" class="btn btn-white" style="margin-right:12px">Visit KeepRule</a>
+        <a href="https://keeprule.com/en/faq" class="btn btn-white" style="background:transparent;border:2px solid white;color:white">Learn More</a>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Decision Journal Template</h4>
+                <p style="font-size:0.9em;line-height:1.6">A free tool for systematic decision tracking. Part of the <a href="https://keeprule.com" style="color:#6ee7b7">KeepRule</a> decision toolkit.</p>
+            </div>
+            <div class="footer-col">
+                <h4>KeepRule</h4>
+                <a href="https://keeprule.com">Home</a>
+                <a href="https://keeprule.com/en/scenarios">Scenarios</a>
+                <a href="https://keeprule.com/en/principles">Principles</a>
+                <a href="https://keeprule.com/en/masters">Masters</a>
+            </div>
+            <div class="footer-col">
+                <h4>Learn More</h4>
+                <a href="https://keeprule.com/en/blog">Blog</a>
+                <a href="https://keeprule.com/en/faq">FAQ</a>
+                <a href="https://keeprule.com">Get Started</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Decision Journal Template. Decision tools by <a href="https://keeprule.com" style="color:#6ee7b7">KeepRule</a>.</p>
+        </div>
+    </footer>
+</body>
+</html>
